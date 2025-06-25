@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:simple_to_do/todo.dart';
+import 'package:simple_to_do/todo_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Simple To-Do',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true, // optional: enables Material 3 design
+      ),
+      home: TodoScreen(
+        todos: List.generate(
+          20,
+          (index) => Todo(
+            "Hey, I am Todo $index",
+            "This is a full description of Todo $index",
+            false,
+            
+          ),
+        ),
+      ),
+    );
+  }
+}
