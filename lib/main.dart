@@ -17,17 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true, // optional: enables Material 3 design
       ),
-      home: TodoScreen(
-        todos: List.generate(
-          20,
-          (index) => Todo(
-            "Hey, I am Todo $index",
-            "This is a full description of Todo $index",
-            false,
-            
-          ),
-        ),
-      ),
+      home: TodoScreen(),
     );
   }
 }
