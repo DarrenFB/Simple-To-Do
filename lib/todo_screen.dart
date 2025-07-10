@@ -21,18 +21,22 @@ class _TodoScreenState extends State<TodoScreen> {
   List<String> savedTodo = List.empty(growable: true);
 
   List<Todo> todos = [];
+  
+  List<String>? get fromMem => null;
 
   @override
   void initState() {
+    deserializeTODO();
     super.initState();
     _initializePrefs();
   }
 
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
-    var todoMem = _prefs?.getStringList("TODO");
-    if (todoMem != null) {
-      savedTodo = todoMem;
+    var fromMem = _prefs?.getStringList("TODO");
+    if (fromMem != null) {
+      todos.clear();
+      savedTodo = fromMem;
       for (int i = 0; i < savedTodo.length; i++) {
         Todo todo = Todo.fromJson(json.decode(savedTodo[i]));
         todos.add(todo);
@@ -42,22 +46,27 @@ class _TodoScreenState extends State<TodoScreen> {
   }
 
   Future<void> serializeTODO() async {
-    savedTodo.clear();
+    // savedTodo.clear();
+    SharedPreferences? prefs = await SharedPreferences.getInstance();
     for (int i = 0; i < widget.todos.length; i++) {
       String todo = json.encode(widget.todos[i]);
       savedTodo.add(todo);
     }
-    await _prefs?.setStringList("TODO", savedTodo);
+    await prefs?.setStringList("TODO", savedTodo);
   }
 
   Future<void> deserializeTODO() async {
-    var todoMem = _prefs?.getStringList("TODO");
-    if (todoMem != null) {
-      savedTodo = todoMem;
+    var fromMem = _prefs?.getStringList("TODO");
+    if (fromMem != null) {
+      print(fromMem.length);
+      savedTodo = fromMem;
       todos.clear();
       for (int i = 0; i < savedTodo.length; i++) {
+        print(savedTodo[i]);
         Todo todo = Todo.fromJson(json.decode(savedTodo[i]));
-        todos.add(todo);
+        setState(() {
+          todos.add(todo);
+        });
       }
       setState(() {});
     }
@@ -125,6 +134,7 @@ class _TodoScreenState extends State<TodoScreen> {
     if(result != null && result is Todo){
       setState(() {
         todos.add(result);
+        serializeTODO();
       });
 
     }

@@ -1,25 +1,34 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:simple_to_do/todo.dart';
-import 'package:uuid/uuid.dart';
 
-class AddTodo extends StatefulWidget {
-  const AddTodo({super.key});
+class EditTodo extends StatefulWidget {
+  const EditTodo({super.key});
 
   @override
-  State<AddTodo> createState() => _AddTodoState();
+  State<EditTodo> createState() => _EditTodoState();
 }
 
-class _AddTodoState extends State<AddTodo> {
-
+class _EditTodoState extends State<EditTodo> {
+  
   String title = "";
   String description = "";
-  var uuid = Uuid();
+  TextEditingController titleEdit = TextEditingController();
+  TextEditingController descEdit = TextEditingController();
 
-  // ignore: recursive_getters
-  get descEdit => descEdit;
+  late Todo todo;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    todo = ModalRoute.of(context)!.settings.arguments as Todo;
+    titleEdit.text = todo.title;
+    descEdit.text = todo.description;
     return Scaffold(
       appBar: AppBar(title: const Text("Add Todo")),
       body: Padding(
@@ -45,7 +54,6 @@ class _AddTodoState extends State<AddTodo> {
                 border: OutlineInputBorder(),
                 hintText: "Add Description",
               ),
-              controller: descEdit,
               onChanged: (value) {
                 description = value;
               },
@@ -67,18 +75,21 @@ class _AddTodoState extends State<AddTodo> {
                   ),
                 );
               } else {
-                Todo todo = createTodo(title, description, false);
-                Navigator.pop(context, todo);
+                Todo updatedTodo = editTodo(title, description, false, todo.id as int);
+                Navigator.pop(context, updatedTodo);
               }
-            }, child: Text("Add TODO"),
-          ),
-        ],),
+            }, child: Text("Add TODO")),
+          ],),
       )
     );
   }
-  Todo createTodo(String title, String description, bool done) {
-    String id = uuid.v1();
-    return Todo(title: title, description: description, done: false, id: id);
+
+  Todo editTodo(String title, String description, bool done, int id) {
+    return Todo(
+      title: title,
+      description: description,
+      done: done,
+      id: id.toString(),
+    );
   }
 }
-

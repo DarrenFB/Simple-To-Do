@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:simple_to_do/todo.dart';
 import 'package:simple_to_do/todo_screen.dart';
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Simple To-Do',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true, // optional: enables Material 3 design
+        useMaterial3: true, 
       ),
       home: TodoScreen(),
     );
