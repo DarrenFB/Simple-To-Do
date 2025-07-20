@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:simple_to_do/helper.dart';
 import 'package:simple_to_do/todo.dart';
 
 class EditTodo extends StatefulWidget {
@@ -19,9 +20,16 @@ class _EditTodoState extends State<EditTodo> {
 
   late Todo todo;
 
+  List<Todo> todos = <Todo>[];
+  List<String> savedTodo = <String>[];
+
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> _getTodos() async {
+    todos = await deserializeTODO(savedTodo, todos)
   }
 
   @override
@@ -85,11 +93,22 @@ class _EditTodoState extends State<EditTodo> {
   }
 
   Todo editTodo(String title, String description, bool done, int id) {
+    for(int i = 0; i < todos.length; i++) {
+      if(todos[i].id == id) {
+        todos[i] = Todo(
+          title: title,
+          description: description,
+          done: false,
+          id: todo.id,
+        );
+      }
+    }
     return Todo(
       title: title,
       description: description,
       done: done,
-      id: id.toString(),
+      id: todo.id,
     );
   }
 }
+

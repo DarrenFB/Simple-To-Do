@@ -20,15 +20,21 @@ class _TodoScreenState extends State<TodoScreen> {
 
   List<String> savedTodo = List.empty(growable: true);
 
-  List<Todo> todos = [];
-  
+  List<Todo> todos = <Todo>[];
+
   List<String>? get fromMem => null;
 
   @override
   void initState() {
-    deserializeTODO();
+    _getTodos();
     super.initState();
-    _initializePrefs();
+  }
+
+  Future<void> _getTodos() async {
+    var todo = await deserializeTODO(savedTodo, todos);
+    setState(() {
+      todos = todo;
+    });
   }
 
   Future<void> _initializePrefs() async {
@@ -55,7 +61,7 @@ class _TodoScreenState extends State<TodoScreen> {
     await prefs?.setStringList("TODO", savedTodo);
   }
 
-  Future<void> deserializeTODO() async {
+  Future<void> deserializeTODO(List<String> savedTodo) async {
     var fromMem = _prefs?.getStringList("TODO");
     if (fromMem != null) {
       print(fromMem.length);
@@ -123,7 +129,15 @@ class _TodoScreenState extends State<TodoScreen> {
           ),
     );
   }
-  Future<void>_navigateAndDisplayAddTodo(BuildContext context) async {
+
+  Future<void> _navigateToDetails(BuildContext context, Todo todoDetail) async {
+    final result = await Navigator.push(context, MaterialPageRoute(
+      builder: (context) => DetailScreen(),
+      settings: RouteSettings(arguments: todoDetail),
+    ));
+  }
+
+  Future<void> _navigateAndDisplayAddTodo(BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddTodo()),
@@ -134,7 +148,7 @@ class _TodoScreenState extends State<TodoScreen> {
     if(result != null && result is Todo){
       setState(() {
         todos.add(result);
-        serializeTODO();
+        serializeTODO(savedTodo, todos);
       });
 
     }
